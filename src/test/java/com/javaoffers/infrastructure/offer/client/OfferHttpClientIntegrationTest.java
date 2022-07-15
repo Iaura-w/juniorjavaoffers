@@ -127,6 +127,33 @@ public class OfferHttpClientIntegrationTest {
                 .hasMessage("401 UNAUTHORIZED");
     }
 
+    @Test
+    void should_return_zero_job_offers_when_response_delay_is_2000_millis() {
+        // given
+        WireMock.stubFor(WireMock.get("/offers")
+                .willReturn(WireMock.aResponse()
+                        .withStatus(HttpStatus.OK.value())
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(bodyWithZeroOffers())
+                        .withFixedDelay(2000)));
+        // when
+        // then
+        then(remoteOfferClient.getOffers()).isEmpty();
+    }
+
+    @Test
+    void should_return_zero_job_offers_when_status_is_no_content() {
+        // given
+        WireMock.stubFor(WireMock.get("/offers")
+                .willReturn(WireMock.aResponse()
+                        .withStatus(HttpStatus.NO_CONTENT.value())
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(bodyWithZeroOffers())));
+        // when
+        // then
+        then(remoteOfferClient.getOffers()).isEmpty();
+    }
+
     private OfferDto offerDto1() {
         return getOfferDto("Junior Java Developer", "ABC", "4k - 8k PLN", "https://jobs.com/ABC");
     }
