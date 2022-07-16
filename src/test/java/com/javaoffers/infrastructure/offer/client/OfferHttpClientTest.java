@@ -11,8 +11,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-class OfferHttpClientTest implements SampleExchangeResponse, SampleOfferResponse{
-
+class OfferHttpClientTest implements SampleExchangeResponse, SampleOfferResponse {
 
     @Test
     void should_return_list_of_one_offer() {
