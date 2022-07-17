@@ -1,5 +1,6 @@
 package com.javaoffers.offer;
 
+import com.javaoffers.offer.domain.OfferMapper;
 import com.javaoffers.offer.domain.dto.OfferDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -20,8 +21,8 @@ public class OfferController {
     private final Map<Long, OfferDto> data = new HashMap<>();
 
     public OfferController() {
-        data.put(1L, new OfferDto("Junior Java Developer", "ABC", "6k - 8k PLN", "https://example.com"));
-        data.put(2L, new OfferDto("Junior Android Developer", "XYZ", "7k - 10k PLN", "https://example.com"));
+        data.put(1L, OfferMapper.mapToOfferDto("Junior Java Developer", "ABC", "6k - 8k PLN", "https://example.com"));
+        data.put(2L, OfferMapper.mapToOfferDto("Junior Android Developer", "XYZ", "7k - 10k PLN", "https://example.com"));
     }
 
     @GetMapping("/offers")

@@ -1,15 +1,13 @@
 package com.javaoffers.offer.domain.dto;
 
-import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Getter;
+import lombok.Value;
 
-@AllArgsConstructor
-@Getter
+@Value
 @Builder
 public class OfferDto {
-    private String title;
-    private String company;
-    private String salary;
-    private String offerUrl;
+    String title;
+    String company;
+    String salary;
+    String offerUrl;
 }
