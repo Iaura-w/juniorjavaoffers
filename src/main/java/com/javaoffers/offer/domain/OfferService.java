@@ -18,11 +18,11 @@ public class OfferService {
         data.put(2L, OfferMapper.mapToOfferDto("Junior Android Developer", "XYZ", "7k - 10k PLN", "https://example.com"));
     }
 
-    public List<OfferDto> findAllOffers() {
+    public List<OfferDto> getAllOffers() {
         return new ArrayList<>(data.values());
     }
 
-    public OfferDto findOfferById(long id) {
+    public OfferDto getOfferById(long id) {
         if (!data.containsKey(id)) {
             throw new OfferNotFoundException(id);
         } else {
