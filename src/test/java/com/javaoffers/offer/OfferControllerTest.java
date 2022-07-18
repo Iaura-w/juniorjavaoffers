@@ -3,11 +3,13 @@ package com.javaoffers.offer;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.javaoffers.offer.domain.OfferService;
 import com.javaoffers.offer.domain.dto.OfferDto;
+import com.javaoffers.offer.domain.exceptions.OfferControllerErrorHandler;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpStatus;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
@@ -51,7 +53,7 @@ class OfferControllerTest implements SampleOfferDto {
     }
 
     @Test
-    void should_return_status_ok_when_get_offer_with_id_found() throws Exception {
+    void should_return_status_ok_when_get_offer_by_id_found() throws Exception {
         // given
         String expected = objectMapper.writeValueAsString(offerDto1());
 
@@ -66,6 +68,26 @@ class OfferControllerTest implements SampleOfferDto {
         String actual = mvcResult.getResponse().getContentAsString();
 
         assertThat(actual).isEqualTo(expected);
+    }
+
+    @Test
+    void should_return_status_not_found_when_get_offer_by_id_not_found() throws Exception {
+        // given
+        int id = 828;
+        String expected1 = String.format("Offer with id %d was not found", id);
+        String expected2 = HttpStatus.NOT_FOUND.name();
+
+        // when
+        ResultActions resultActions = mockMvc.perform(get("/api/offers/" + id));
+
+        // then
+        MvcResult mvcResult = resultActions
+                .andExpect(status().isNotFound())
+                .andDo(print())
+                .andReturn();
+        String actual = mvcResult.getResponse().getContentAsString();
+
+        assertThat(actual).contains(expected1, expected2);
     }
 }
 
@@ -85,5 +107,10 @@ class MockMvcConfig implements SampleOfferDto {
     @Bean
     OfferController offerController(OfferService offerService) {
         return new OfferController(offerService);
+    }
+
+    @Bean
+    OfferControllerErrorHandler offerControllerErrorHandler() {
+        return new OfferControllerErrorHandler();
     }
 }
