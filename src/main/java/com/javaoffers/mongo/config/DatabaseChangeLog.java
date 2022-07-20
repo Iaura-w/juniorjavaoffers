@@ -11,7 +11,7 @@ import java.util.List;
 @ChangeLog(order = "001")
 public class DatabaseChangeLog {
 
-    @ChangeSet(order = "001", id = "seedDatabase", author = "user")
+    @ChangeSet(order = "001", id = "seedDatabase", author = "lauur")
     public void seedDatabase(OfferRepository offerRepository) {
         List<Offer> offerList = new ArrayList<>();
         offerList.add(offer1());
