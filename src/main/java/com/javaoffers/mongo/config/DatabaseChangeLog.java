@@ -8,10 +8,10 @@ import com.javaoffers.offer.domain.OfferRepository;
 import java.util.ArrayList;
 import java.util.List;
 
-@ChangeLog
+@ChangeLog(order = "001")
 public class DatabaseChangeLog {
 
-    @ChangeSet(author = "lauur", id = "seedDatabase", order = "001")
+    @ChangeSet(order = "001", id = "seedDatabase", author = "user")
     public void seedDatabase(OfferRepository offerRepository) {
         List<Offer> offerList = new ArrayList<>();
         offerList.add(offer1());
