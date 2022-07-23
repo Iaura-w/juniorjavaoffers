@@ -26,7 +26,7 @@ public class OfferController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<OfferDto> getOfferById(@PathVariable Long id) {
+    public ResponseEntity<OfferDto> getOfferById(@PathVariable String id) {
         log.info("Request for offer with id " + id);
         return ResponseEntity.ok(service.getOfferById(id));
     }
