@@ -14,8 +14,8 @@ class OfferControllerErrorHandlerTest {
     @Test
     void should_return_correct_response() {
         // given
-        long id = 231L;
-        OfferErrorResponse expected = new OfferErrorResponse(ZonedDateTime.now(), HttpStatus.NOT_FOUND, String.format("Offer with id %d was not found", id));
+        String id = "231";
+        OfferErrorResponse expected = new OfferErrorResponse(ZonedDateTime.now(), HttpStatus.NOT_FOUND, String.format("Offer with id %s was not found", id));
 
         // when
         OfferErrorResponse actual = offerControllerErrorHandler.handleOfferNotFoundException(new OfferNotFoundException(id));
