@@ -3,13 +3,13 @@ package com.javaoffers.offer;
 import com.javaoffers.offer.domain.OfferMapper;
 import com.javaoffers.offer.domain.dto.OfferDto;
 
-public interface SampleOfferDto {
+public interface SampleOfferDto extends SampleOffer {
 
     default OfferDto offerDto1() {
-        return OfferMapper.mapToOfferDto("Junior Java Developer", "ABC", "6k - 8k PLN", "https://example.com");
+        return OfferMapper.mapToOfferDto(offer1());
     }
 
     default OfferDto offerDto2() {
-        return OfferMapper.mapToOfferDto("Junior Android Developer", "XYZ", "7k - 10k PLN", "https://example.com");
+        return OfferMapper.mapToOfferDto(offer2());
     }
 }
