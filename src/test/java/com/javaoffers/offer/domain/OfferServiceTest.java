@@ -51,6 +51,7 @@ class OfferServiceTest implements SampleOfferDto, SampleOffer {
     void should_throw_when_offer_by_id_not_found() {
         // given
         String id = "341";
+        when(repository.findById(id)).thenReturn(Optional.empty());
 
         // when
         // then
