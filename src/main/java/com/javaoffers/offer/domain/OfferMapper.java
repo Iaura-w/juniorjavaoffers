@@ -4,12 +4,13 @@ import com.javaoffers.offer.domain.dto.OfferDto;
 
 public class OfferMapper {
 
-    public static OfferDto mapToOfferDto(String title, String company, String salary, String offerUrl) {
+    public static OfferDto mapToOfferDto(Offer offer) {
         return OfferDto.builder()
-                .title(title)
-                .company(company)
-                .salary(salary)
-                .offerUrl(offerUrl)
+                .id(offer.getId())
+                .title(offer.getTitle())
+                .company(offer.getCompany())
+                .salary(offer.getSalary())
+                .offerUrl(offer.getOfferUrl())
                 .build();
     }
 }

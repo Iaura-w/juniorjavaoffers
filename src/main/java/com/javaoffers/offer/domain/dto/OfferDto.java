@@ -6,6 +6,7 @@ import lombok.Value;
 @Value
 @Builder
 public class OfferDto {
+    String id;
     String title;
     String company;
     String salary;
