@@ -21,10 +21,10 @@ public class DatabaseChangeLog {
     }
 
     private Offer offer2() {
-        return new Offer("2", "Junior Android Developer", "XYZ", "7k - 10k PLN", "https://example.com");
+        return new Offer("2", "XYZ", "Junior Android Developer", "7k - 10k PLN", "https://example.com");
     }
 
     private Offer offer1() {
-        return new Offer("1", "Junior Java Developer", "ABC", "6k - 8k PLN", "https://example.com");
+        return new Offer("1", "ABC", "Junior Java Developer", "6k - 8k PLN", "https://example.com");
     }
 }
