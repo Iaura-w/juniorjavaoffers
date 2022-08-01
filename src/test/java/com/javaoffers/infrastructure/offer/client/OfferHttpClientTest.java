@@ -1,6 +1,6 @@
 package com.javaoffers.infrastructure.offer.client;
 
-import com.javaoffers.infrastructure.offer.dto.OfferDto;
+import com.javaoffers.infrastructure.offer.dto.HttpOfferDto;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.web.client.RestTemplate;
@@ -25,7 +25,7 @@ class OfferHttpClientTest implements SampleExchangeResponse, SampleOfferResponse
         OfferHttpClient offerHttpClient = new OfferHttpClient(restTemplate, uri);
 
         // when
-        List<OfferDto> offers = offerHttpClient.getOffers();
+        List<HttpOfferDto> offers = offerHttpClient.getOffers();
 
         // then
         assertThat(offers.size()).isEqualTo(1);
@@ -43,7 +43,7 @@ class OfferHttpClientTest implements SampleExchangeResponse, SampleOfferResponse
         OfferHttpClient offerHttpClient = new OfferHttpClient(restTemplate, uri);
 
         // when
-        List<OfferDto> offers = offerHttpClient.getOffers();
+        List<HttpOfferDto> offers = offerHttpClient.getOffers();
 
         // then
         assertThat(offers.size()).isEqualTo(0);
@@ -61,7 +61,7 @@ class OfferHttpClientTest implements SampleExchangeResponse, SampleOfferResponse
         OfferHttpClient offerHttpClient = new OfferHttpClient(restTemplate, uri);
 
         // when
-        List<OfferDto> offers = offerHttpClient.getOffers();
+        List<HttpOfferDto> offers = offerHttpClient.getOffers();
 
         // then
         assertThat(offers.size()).isEqualTo(2);

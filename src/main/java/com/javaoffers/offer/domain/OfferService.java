@@ -1,5 +1,6 @@
 package com.javaoffers.offer.domain;
 
+import com.javaoffers.infrastructure.offer.dto.HttpOfferDto;
 import com.javaoffers.offer.domain.dto.OfferDto;
 import com.javaoffers.offer.domain.exceptions.OfferNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -28,5 +29,16 @@ public class OfferService {
 
     public List<Offer> saveAll(List<Offer> offers) {
         return repository.saveAll(offers);
+    }
+
+    public List<Offer> saveAllHttpOffers(List<HttpOfferDto> offersDto) {
+        List<Offer> offerList = offersDto.stream()
+                .filter(offerDto -> offerDto.getOfferUrl() != null)
+                .filter(offerDto -> !offerDto.getOfferUrl().isEmpty())
+                .filter(offerDto -> !repository.existsByOfferUrl(offerDto.getOfferUrl()))
+                .map(OfferMapper::mapToOffer)
+                .collect(Collectors.toList());
+
+        return repository.saveAll(offerList);
     }
 }
