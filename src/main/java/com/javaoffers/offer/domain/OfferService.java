@@ -25,4 +25,8 @@ public class OfferService {
                 .map(OfferMapper::mapToOfferDto)
                 .orElseThrow(() -> new OfferNotFoundException(id));
     }
+
+    public List<Offer> saveAll(List<Offer> offers) {
+        return repository.saveAll(offers);
+    }
 }
