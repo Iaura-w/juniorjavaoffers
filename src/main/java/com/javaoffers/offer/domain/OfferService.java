@@ -31,7 +31,7 @@ public class OfferService {
         return repository.saveAll(offers);
     }
 
-    public List<Offer> saveAllHttpOffers(List<HttpOfferDto> offersDto) {
+    public List<Offer> saveAllOffersDto(List<HttpOfferDto> offersDto) {
         List<Offer> offerList = offersDto.stream()
                 .filter(offerDto -> offerDto.getOfferUrl() != null)
                 .filter(offerDto -> !offerDto.getOfferUrl().isEmpty())

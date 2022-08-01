@@ -20,7 +20,7 @@ public class HttpOfferScheduler {
     @Scheduled(fixedDelayString = "${httpOfferScheduler.delay}")
     public void getOffers() {
         List<HttpOfferDto> offers = offerClient.getOffers();
-        List<Offer> savedOffers = service.saveAllHttpOffers(offers);
+        List<Offer> savedOffers = service.saveAllOffersDto(offers);
         log.info("Added {} offers to database", savedOffers.size());
     }
 }
