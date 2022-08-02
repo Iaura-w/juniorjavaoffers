@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class OfferDto {
+public class HttpOfferDto {
     private String title;
     private String company;
     private String salary;

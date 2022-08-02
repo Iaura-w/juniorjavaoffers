@@ -5,7 +5,7 @@ import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration;
 import com.javaoffers.config.TestConfig;
 import com.javaoffers.infrastructure.RemoteOfferClient;
-import com.javaoffers.infrastructure.offer.dto.OfferDto;
+import com.javaoffers.infrastructure.offer.dto.HttpOfferDto;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -154,16 +154,21 @@ public class OfferHttpClientIntegrationTest {
         then(remoteOfferClient.getOffers()).isEmpty();
     }
 
-    private OfferDto offerDto1() {
+    private HttpOfferDto offerDto1() {
         return getOfferDto("Junior Java Developer", "ABC", "4k - 8k PLN", "https://jobs.com/ABC");
     }
 
-    private OfferDto offerDto2() {
+    private HttpOfferDto offerDto2() {
         return getOfferDto("Java Developer", "XYZ", "7k - 14k PLN", "https://jobs.com/XYZ");
     }
 
-    private OfferDto getOfferDto(String title, String company, String salary, String url) {
-        return OfferDto.builder().title(title).company(company).salary(salary).offerUrl(url).build();
+    private HttpOfferDto getOfferDto(String title, String company, String salary, String url) {
+        return HttpOfferDto.builder()
+                .title(title)
+                .company(company)
+                .salary(salary)
+                .offerUrl(url)
+                .build();
     }
 
     private String bodyWithZeroOffers() {

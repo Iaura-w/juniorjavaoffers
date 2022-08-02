@@ -1,7 +1,7 @@
 package com.javaoffers.infrastructure.offer.client;
 
 import com.javaoffers.infrastructure.RemoteOfferClient;
-import com.javaoffers.infrastructure.offer.dto.OfferDto;
+import com.javaoffers.infrastructure.offer.dto.HttpOfferDto;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.ParameterizedTypeReference;
@@ -25,15 +25,15 @@ public class OfferHttpClient implements RemoteOfferClient {
     private final String uri;
 
     @Override
-    public List<OfferDto> getOffers() {
+    public List<HttpOfferDto> getOffers() {
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setContentType(MediaType.APPLICATION_JSON);
         final HttpEntity<HttpHeaders> requestEntity = new HttpEntity<>(httpHeaders);
 
         try {
-            ResponseEntity<List<OfferDto>> response = restTemplate.exchange(uri, HttpMethod.GET, requestEntity, new ParameterizedTypeReference<List<OfferDto>>() {
+            ResponseEntity<List<HttpOfferDto>> response = restTemplate.exchange(uri, HttpMethod.GET, requestEntity, new ParameterizedTypeReference<List<HttpOfferDto>>() {
             });
-            List<OfferDto> offerList = response.getBody();
+            List<HttpOfferDto> offerList = response.getBody();
             return Optional.ofNullable(offerList).orElse(Collections.emptyList());
         } catch (RestClientException e) {
             log.error(e.getMessage());
