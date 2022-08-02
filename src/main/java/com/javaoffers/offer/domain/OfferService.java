@@ -32,13 +32,16 @@ public class OfferService {
     }
 
     public List<Offer> saveAllOffersDto(List<HttpOfferDto> offersDto) {
-        List<Offer> offerList = offersDto.stream()
+        List<Offer> offerList = getUniqueOffers(offersDto);
+        return repository.saveAll(offerList);
+    }
+
+    private List<Offer> getUniqueOffers(List<HttpOfferDto> offersDto) {
+        return offersDto.stream()
                 .filter(offerDto -> offerDto.getOfferUrl() != null)
                 .filter(offerDto -> !offerDto.getOfferUrl().isEmpty())
                 .filter(offerDto -> !repository.existsByOfferUrl(offerDto.getOfferUrl()))
                 .map(OfferMapper::mapToOffer)
                 .collect(Collectors.toList());
-
-        return repository.saveAll(offerList);
     }
 }

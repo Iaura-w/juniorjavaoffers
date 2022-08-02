@@ -163,7 +163,12 @@ public class OfferHttpClientIntegrationTest {
     }
 
     private HttpOfferDto getOfferDto(String title, String company, String salary, String url) {
-        return HttpOfferDto.builder().title(title).company(company).salary(salary).offerUrl(url).build();
+        return HttpOfferDto.builder()
+                .title(title)
+                .company(company)
+                .salary(salary)
+                .offerUrl(url)
+                .build();
     }
 
     private String bodyWithZeroOffers() {
