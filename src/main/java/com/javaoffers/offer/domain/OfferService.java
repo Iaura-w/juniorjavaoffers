@@ -4,6 +4,7 @@ import com.javaoffers.infrastructure.offer.dto.HttpOfferDto;
 import com.javaoffers.offer.domain.dto.OfferDto;
 import com.javaoffers.offer.domain.exceptions.OfferNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -14,6 +15,7 @@ import java.util.stream.Collectors;
 public class OfferService {
     private final OfferRepository repository;
 
+    @Cacheable("all_offers")
     public List<OfferDto> getAllOffers() {
         return repository.findAll()
                 .stream()
