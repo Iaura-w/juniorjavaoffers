@@ -23,9 +23,11 @@
         <wiremock-standalone.version>2.27.2</wiremock-standalone.version>
         <mongock-bom.version>4.3.8</mongock-bom.version>
         <mongodb-driver-sync.version>4.6.0</mongodb-driver-sync.version>
-        <spring-data-mongodb.version>3.4.0</spring-data-mongodb.version>
+        <spring-data-mongodb.version>3.4.2</spring-data-mongodb.version>
         <testcontainers.version>1.17.3</testcontainers.version>
         <awaitility.version>4.2.0</awaitility.version>
+        <spring-data-redis.version>2.7.2</spring-data-redis.version>
+        <jedis.version>3.9.0</jedis.version>
     </properties>
 
     <dependencies>
@@ -87,6 +89,16 @@
             <artifactId>awaitility</artifactId>
             <version>${awaitility.version}</version>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.data</groupId>
+            <artifactId>spring-data-redis</artifactId>
+            <version>${spring-data-redis.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>redis.clients</groupId>
+            <artifactId>jedis</artifactId>
+            <version>${jedis.version}</version>
         </dependency>
     </dependencies>
 
