@@ -16,14 +16,17 @@ import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.utility.DockerImageName;
 
+import java.time.Duration;
+
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.awaitility.Awaitility.await;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
-@SpringBootTest(classes = OfferServiceCachingWithContainerTest.Config.class)
+@SpringBootTest(classes = OfferServiceCacheExpireWithContainerTest.Config.class)
 @Testcontainers
 @ActiveProfiles("redis")
-public class OfferServiceCachingWithContainerTest {
+public class OfferServiceCacheExpireWithContainerTest {
 
     @Container
     private static final GenericContainer<?> REDIS = new GenericContainer<>(DockerImageName.parse("redis:7.0.4")).withExposedPorts(6379);
@@ -49,17 +52,20 @@ public class OfferServiceCachingWithContainerTest {
     }
 
     @Test
-    void should_get_cached_offers_when_getAllOffers_called_twice() {
+    void cache_should_expire_after_given_time() {
         // given
-        assertThat(cacheManager.getCacheNames()).isEmpty();
+        Duration duration = Duration.ofSeconds(2);
+        service.getAllOffers();
+        assertThat(cacheManager.getCacheNames()).hasSize(1);
 
         // when
-        service.getAllOffers();
-        service.getAllOffers();
-
         // then
-        assertThat(cacheManager.getCacheNames()).hasSize(1);
-        verify(repository, times(1)).findAll();
+        await()
+                .atMost(duration)
+                .untilAsserted(() -> {
+                    service.getAllOffers();
+                    verify(repository, times(2)).findAll();
+                });
     }
 
     @Import(JobOffersApplication.class)
