@@ -48,7 +48,7 @@ public class OfferServiceSaveAllDtoWithContainerTest {
         HttpOfferDto newOfferDto1 = new HttpOfferDto("new title1", "new company1", "6k - 8k PLN", "https://example.com/offer1");
         HttpOfferDto newOfferDto2 = new HttpOfferDto("new title2", "new company2", "6k - 8k PLN", "https://example.com/offer2");
         List<HttpOfferDto> offerDtoList = Arrays.asList(newOfferDto1, newOfferDto2);
-        List<Offer> offerList = offerDtoList.stream().map(OfferMapper::mapToOffer).collect(Collectors.toList());
+        List<Offer> offerList = offerDtoList.stream().map(OfferMapper::mapFromHttpOfferDtoToOffer).collect(Collectors.toList());
 
         assertThat(repository.findAll()).usingRecursiveFieldByFieldElementComparatorIgnoringFields("id").doesNotContainAnyElementsOf(offerList);
 

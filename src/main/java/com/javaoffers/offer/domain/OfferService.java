@@ -19,13 +19,13 @@ public class OfferService {
     public List<OfferDto> getAllOffers() {
         return repository.findAll()
                 .stream()
-                .map(OfferMapper::mapToOfferDto)
+                .map(OfferMapper::mapFromOfferToOfferDto)
                 .collect(Collectors.toList());
     }
 
     public OfferDto getOfferById(String id) {
         return repository.findById(id)
-                .map(OfferMapper::mapToOfferDto)
+                .map(OfferMapper::mapFromOfferToOfferDto)
                 .orElseThrow(() -> new OfferNotFoundException(id));
     }
 
@@ -43,7 +43,13 @@ public class OfferService {
                 .filter(offerDto -> offerDto.getOfferUrl() != null)
                 .filter(offerDto -> !offerDto.getOfferUrl().isEmpty())
                 .filter(offerDto -> !repository.existsByOfferUrl(offerDto.getOfferUrl()))
-                .map(OfferMapper::mapToOffer)
+                .map(OfferMapper::mapFromHttpOfferDtoToOffer)
                 .collect(Collectors.toList());
+    }
+
+    public OfferDto saveOffer(OfferDto offerDto) {
+        Offer offer = OfferMapper.mapFromOfferDtoToOffer(offerDto);
+        repository.save(offer);
+        return offerDto;
     }
 }

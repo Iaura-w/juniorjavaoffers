@@ -5,7 +5,7 @@ import com.javaoffers.offer.domain.dto.OfferDto;
 
 public class OfferMapper {
 
-    public static OfferDto mapToOfferDto(Offer offer) {
+    public static OfferDto mapFromOfferToOfferDto(Offer offer) {
         return OfferDto.builder()
                 .id(offer.getId())
                 .title(offer.getTitle())
@@ -15,7 +15,16 @@ public class OfferMapper {
                 .build();
     }
 
-    public static Offer mapToOffer(HttpOfferDto offerDto) {
+    public static Offer mapFromHttpOfferDtoToOffer(HttpOfferDto offerDto) {
+        return Offer.builder()
+                .company(offerDto.getCompany())
+                .title(offerDto.getTitle())
+                .salary(offerDto.getSalary())
+                .offerUrl(offerDto.getOfferUrl())
+                .build();
+    }
+
+    public static Offer mapFromOfferDtoToOffer(OfferDto offerDto) {
         return Offer.builder()
                 .company(offerDto.getCompany())
                 .title(offerDto.getTitle())
