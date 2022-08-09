@@ -34,4 +34,12 @@ public class OfferControllerErrorHandler {
         log.error(errors.toString());
         return new OfferErrorResponse(ZonedDateTime.now(), HttpStatus.BAD_REQUEST, errors.toString());
     }
+
+    @ExceptionHandler(DuplicateOfferUrlException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public OfferErrorResponse handleDuplicateOfferUrlException(DuplicateOfferUrlException e) {
+        String message = e.getMessage();
+        log.error(message);
+        return new OfferErrorResponse(ZonedDateTime.now(), HttpStatus.CONFLICT, message);
+    }
 }

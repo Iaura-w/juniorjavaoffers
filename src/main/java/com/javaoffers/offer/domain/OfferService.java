@@ -2,9 +2,11 @@ package com.javaoffers.offer.domain;
 
 import com.javaoffers.infrastructure.offer.dto.HttpOfferDto;
 import com.javaoffers.offer.domain.dto.OfferDto;
+import com.javaoffers.offer.domain.exceptions.DuplicateOfferUrlException;
 import com.javaoffers.offer.domain.exceptions.OfferNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -49,7 +51,11 @@ public class OfferService {
 
     public OfferDto saveOffer(OfferDto offerDto) {
         Offer offer = OfferMapper.mapFromOfferDtoToOffer(offerDto);
-        repository.save(offer);
-        return offerDto;
+        try {
+            Offer savedOffer = repository.save(offer);
+            return OfferMapper.mapFromOfferToOfferDto(savedOffer);
+        } catch (DuplicateKeyException e) {
+            throw new DuplicateOfferUrlException(offer.getOfferUrl());
+        }
     }
 }
