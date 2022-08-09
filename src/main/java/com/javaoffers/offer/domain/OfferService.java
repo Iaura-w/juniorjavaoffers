@@ -58,4 +58,8 @@ public class OfferService {
             throw new DuplicateOfferUrlException(offer.getOfferUrl());
         }
     }
+
+    public void deleteOfferById(String id) {
+        repository.deleteById(id);
+    }
 }
