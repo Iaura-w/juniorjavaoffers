@@ -79,4 +79,20 @@ public class OfferServiceWithContainerTest implements SampleOfferDto {
                 .isInstanceOf(OfferNotFoundException.class)
                 .hasMessageContaining(String.format("Offer with id %s was not found", id));
     }
+
+    @Test
+    void should_delete_offer() {
+        // given
+        Offer offer = newOffer();
+        repository.save(offer);
+        assertThat(repository.findById(offer.getId())).isPresent();
+        assertThat(repository.existsByOfferUrl(offer.getOfferUrl())).isTrue();
+
+        // when
+        service.deleteOfferById(offer.getId());
+
+        // then
+        assertThat(repository.findById(offer.getId())).isNotPresent();
+        assertThat(repository.existsByOfferUrl(offer.getOfferUrl())).isFalse();
+    }
 }
