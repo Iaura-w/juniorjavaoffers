@@ -1,9 +1,6 @@
-package com.javaoffers.offer;
+package com.javaoffers.offer.domain;
 
 import com.javaoffers.JobOffersApplication;
-import com.javaoffers.offer.domain.Offer;
-import com.javaoffers.offer.domain.OfferRepository;
-import com.javaoffers.offer.domain.OfferService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;

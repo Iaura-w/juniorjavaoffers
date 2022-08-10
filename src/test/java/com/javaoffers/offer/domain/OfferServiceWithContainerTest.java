@@ -1,9 +1,7 @@
-package com.javaoffers.offer;
+package com.javaoffers.offer.domain;
 
 import com.javaoffers.JobOffersApplication;
-import com.javaoffers.offer.domain.Offer;
-import com.javaoffers.offer.domain.OfferRepository;
-import com.javaoffers.offer.domain.OfferService;
+import com.javaoffers.offer.SampleOfferDto;
 import com.javaoffers.offer.domain.dto.OfferDto;
 import com.javaoffers.offer.domain.exceptions.OfferNotFoundException;
 import org.junit.jupiter.api.Test;
