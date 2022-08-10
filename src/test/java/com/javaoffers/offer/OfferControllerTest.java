@@ -23,6 +23,7 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -176,6 +177,20 @@ class OfferControllerTest implements SampleOfferDto {
         String actualBody = mvcResult.getResponse().getContentAsString();
 
         assertThat(actualBody).contains(expectedMessage).contains(expectedStatus);
+    }
+
+    @Test
+    void should_return_status_no_content_when_delete_offer() throws Exception {
+        // given
+        OfferDto offerDto = newOfferDto();
+
+        // when
+        ResultActions resultActions = mockMvc.perform(delete("/api/offers/"+offerDto.getId()));
+
+        // then
+        resultActions
+                .andExpect(status().isNoContent())
+                .andDo(print());
     }
 }
 

@@ -15,6 +15,8 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 class OfferServiceTest implements SampleOfferDto, SampleOffer {
@@ -91,5 +93,17 @@ class OfferServiceTest implements SampleOfferDto, SampleOffer {
         assertThatThrownBy(() -> offerService.saveOffer(offerDtoToSave))
                 .isInstanceOf(DuplicateOfferUrlException.class)
                 .hasMessageContaining(String.format("Offer with url '%s' already exists", offerToSave.getOfferUrl()));
+    }
+
+    @Test
+    void should_delete_offer() {
+        // given
+        OfferDto offerDto = newOfferDto();
+
+        // when
+        offerService.deleteOfferById(offerDto.getId());
+
+        // then
+        verify(repository, times(1)).deleteById(offerDto.getId());
     }
 }
