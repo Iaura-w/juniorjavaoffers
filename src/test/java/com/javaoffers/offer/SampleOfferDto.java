@@ -12,4 +12,14 @@ public interface SampleOfferDto extends SampleOffer {
     default OfferDto offerDto2() {
         return OfferMapper.mapFromOfferToOfferDto(offer2());
     }
+
+    default OfferDto newOfferDto() {
+        return OfferDto.builder()
+                .id("newid")
+                .title("title")
+                .company("company")
+                .salary("salary")
+                .offerUrl("unique-url")
+                .build();
+    }
 }
