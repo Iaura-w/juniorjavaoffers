@@ -52,7 +52,7 @@ class OfferServiceTest implements SampleOfferDto, SampleOffer {
     }
 
     @Test
-    void should_throw_when_offer_by_id_not_found() {
+    void should_throw_offer_not_found_exception_when_offer_by_id_not_found() {
         // given
         String id = "341";
         when(repository.findById(id)).thenReturn(Optional.empty());
@@ -82,7 +82,7 @@ class OfferServiceTest implements SampleOfferDto, SampleOffer {
     }
 
     @Test
-    void should_throw_when_save_offer_not_unique_url() {
+    void should_throw_duplicate_offer_url_exception_when_save_offer_with_not_unique_url() {
         // given
         OfferDto offerDtoToSave = newOfferDtoWithoutId();
         Offer offerToSave = newOfferWithoutId();

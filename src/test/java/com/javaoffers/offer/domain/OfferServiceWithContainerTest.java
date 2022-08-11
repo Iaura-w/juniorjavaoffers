@@ -68,7 +68,7 @@ public class OfferServiceWithContainerTest implements SampleOfferDto {
     }
 
     @Test
-    void should_throw_exception_when_offer_by_id_not_found() {
+    void should_throw_offer_not_found_exception_when_offer_by_id_not_found() {
         // given
         String id = "522";
         then(repository.findById(id)).isNotPresent();

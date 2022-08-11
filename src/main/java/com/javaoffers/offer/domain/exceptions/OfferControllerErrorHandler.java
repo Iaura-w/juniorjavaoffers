@@ -26,13 +26,17 @@ public class OfferControllerErrorHandler {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public OfferErrorResponse handleValidationException(MethodArgumentNotValidException e) {
-        List<String> errors = e.getBindingResult()
+        List<String> errors = getErrors(e);
+        log.error(errors.toString());
+        return new OfferErrorResponse(ZonedDateTime.now(), HttpStatus.BAD_REQUEST, errors.toString());
+    }
+
+    private static List<String> getErrors(MethodArgumentNotValidException e) {
+        return e.getBindingResult()
                 .getFieldErrors()
                 .stream()
                 .map(x -> x.getField() + " - " + x.getDefaultMessage())
                 .collect(Collectors.toList());
-        log.error(errors.toString());
-        return new OfferErrorResponse(ZonedDateTime.now(), HttpStatus.BAD_REQUEST, errors.toString());
     }
 
     @ExceptionHandler(DuplicateOfferUrlException.class)

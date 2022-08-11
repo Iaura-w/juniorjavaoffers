@@ -55,7 +55,7 @@ public class OfferServiceSaveOfferWithContainerTest implements SampleOfferDto {
     }
 
     @Test
-    void should_throw_when_offer_url_is_duplicate() {
+    void should_throw_duplicate_offer_url_exception_when_offer_url_is_duplicate() {
         // given
         Offer savedOffer = offer1();
         OfferDto duplicateOffer = offerDto1();

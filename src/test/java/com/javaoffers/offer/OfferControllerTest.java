@@ -149,7 +149,7 @@ class OfferControllerTest implements SampleOfferDto {
     }
 
     @Test
-    void should_return_status_when_add_offer_not_valid() throws Exception {
+    void should_return_status_bad_request_when_add_offer_not_valid() throws Exception {
         // given
         OfferDto notValidOffer = OfferDto.builder()
                 .title(" ")
