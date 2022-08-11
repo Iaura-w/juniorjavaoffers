@@ -2,9 +2,11 @@ package com.javaoffers.offer.domain;
 
 import com.javaoffers.infrastructure.offer.dto.HttpOfferDto;
 import com.javaoffers.offer.domain.dto.OfferDto;
+import com.javaoffers.offer.domain.exceptions.DuplicateOfferUrlException;
 import com.javaoffers.offer.domain.exceptions.OfferNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,13 +21,13 @@ public class OfferService {
     public List<OfferDto> getAllOffers() {
         return repository.findAll()
                 .stream()
-                .map(OfferMapper::mapToOfferDto)
+                .map(OfferMapper::mapFromOfferToOfferDto)
                 .collect(Collectors.toList());
     }
 
     public OfferDto getOfferById(String id) {
         return repository.findById(id)
-                .map(OfferMapper::mapToOfferDto)
+                .map(OfferMapper::mapFromOfferToOfferDto)
                 .orElseThrow(() -> new OfferNotFoundException(id));
     }
 
@@ -43,7 +45,21 @@ public class OfferService {
                 .filter(offerDto -> offerDto.getOfferUrl() != null)
                 .filter(offerDto -> !offerDto.getOfferUrl().isEmpty())
                 .filter(offerDto -> !repository.existsByOfferUrl(offerDto.getOfferUrl()))
-                .map(OfferMapper::mapToOffer)
+                .map(OfferMapper::mapFromHttpOfferDtoToOffer)
                 .collect(Collectors.toList());
+    }
+
+    public OfferDto saveOffer(OfferDto offerDto) {
+        Offer offer = OfferMapper.mapFromOfferDtoToOffer(offerDto);
+        try {
+            Offer savedOffer = repository.save(offer);
+            return OfferMapper.mapFromOfferToOfferDto(savedOffer);
+        } catch (DuplicateKeyException e) {
+            throw new DuplicateOfferUrlException(offer.getOfferUrl());
+        }
+    }
+
+    public void deleteOfferById(String id) {
+        repository.deleteById(id);
     }
 }

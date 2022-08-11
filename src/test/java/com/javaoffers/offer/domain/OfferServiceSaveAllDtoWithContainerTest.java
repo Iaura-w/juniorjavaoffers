@@ -1,11 +1,7 @@
-package com.javaoffers.offer;
+package com.javaoffers.offer.domain;
 
 import com.javaoffers.JobOffersApplication;
 import com.javaoffers.infrastructure.offer.dto.HttpOfferDto;
-import com.javaoffers.offer.domain.Offer;
-import com.javaoffers.offer.domain.OfferMapper;
-import com.javaoffers.offer.domain.OfferRepository;
-import com.javaoffers.offer.domain.OfferService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -45,10 +41,10 @@ public class OfferServiceSaveAllDtoWithContainerTest {
     @Test
     void should_add_offers_from_http_client_when_not_already_exist() {
         // given
-        HttpOfferDto newOfferDto1 = new HttpOfferDto("new title1", "new company1", "6k - 8k PLN", "https://example.com/offer1");
-        HttpOfferDto newOfferDto2 = new HttpOfferDto("new title2", "new company2", "6k - 8k PLN", "https://example.com/offer2");
+        HttpOfferDto newOfferDto1 = new HttpOfferDto("new title1", "new company1", "6k - 8k PLN", "https://example.com/newoffer1");
+        HttpOfferDto newOfferDto2 = new HttpOfferDto("new title2", "new company2", "6k - 8k PLN", "https://example.com/newoffer2");
         List<HttpOfferDto> offerDtoList = Arrays.asList(newOfferDto1, newOfferDto2);
-        List<Offer> offerList = offerDtoList.stream().map(OfferMapper::mapToOffer).collect(Collectors.toList());
+        List<Offer> offerList = offerDtoList.stream().map(OfferMapper::mapFromHttpOfferDtoToOffer).collect(Collectors.toList());
 
         assertThat(repository.findAll()).usingRecursiveFieldByFieldElementComparatorIgnoringFields("id").doesNotContainAnyElementsOf(offerList);
 

@@ -1,9 +1,7 @@
-package com.javaoffers.offer;
+package com.javaoffers.offer.domain;
 
 import com.javaoffers.JobOffersApplication;
-import com.javaoffers.offer.domain.Offer;
-import com.javaoffers.offer.domain.OfferRepository;
-import com.javaoffers.offer.domain.OfferService;
+import com.javaoffers.offer.SampleOfferDto;
 import com.javaoffers.offer.domain.dto.OfferDto;
 import com.javaoffers.offer.domain.exceptions.OfferNotFoundException;
 import org.junit.jupiter.api.Test;
@@ -70,7 +68,7 @@ public class OfferServiceWithContainerTest implements SampleOfferDto {
     }
 
     @Test
-    void should_throw_exception_when_offer_by_id_not_found() {
+    void should_throw_offer_not_found_exception_when_offer_by_id_not_found() {
         // given
         String id = "522";
         then(repository.findById(id)).isNotPresent();
@@ -80,5 +78,21 @@ public class OfferServiceWithContainerTest implements SampleOfferDto {
         assertThatThrownBy(() -> service.getOfferById(id))
                 .isInstanceOf(OfferNotFoundException.class)
                 .hasMessageContaining(String.format("Offer with id %s was not found", id));
+    }
+
+    @Test
+    void should_delete_offer() {
+        // given
+        Offer offer = newOffer();
+        repository.save(offer);
+        assertThat(repository.findById(offer.getId())).isPresent();
+        assertThat(repository.existsByOfferUrl(offer.getOfferUrl())).isTrue();
+
+        // when
+        service.deleteOfferById(offer.getId());
+
+        // then
+        assertThat(repository.findById(offer.getId())).isNotPresent();
+        assertThat(repository.existsByOfferUrl(offer.getOfferUrl())).isFalse();
     }
 }

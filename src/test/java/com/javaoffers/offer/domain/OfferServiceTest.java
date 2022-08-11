@@ -3,8 +3,10 @@ package com.javaoffers.offer.domain;
 import com.javaoffers.offer.SampleOffer;
 import com.javaoffers.offer.SampleOfferDto;
 import com.javaoffers.offer.domain.dto.OfferDto;
+import com.javaoffers.offer.domain.exceptions.DuplicateOfferUrlException;
 import com.javaoffers.offer.domain.exceptions.OfferNotFoundException;
 import org.junit.jupiter.api.Test;
+import org.springframework.dao.DuplicateKeyException;
 
 import java.util.Arrays;
 import java.util.List;
@@ -13,6 +15,8 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 class OfferServiceTest implements SampleOfferDto, SampleOffer {
@@ -48,7 +52,7 @@ class OfferServiceTest implements SampleOfferDto, SampleOffer {
     }
 
     @Test
-    void should_throw_when_offer_by_id_not_found() {
+    void should_throw_offer_not_found_exception_when_offer_by_id_not_found() {
         // given
         String id = "341";
         when(repository.findById(id)).thenReturn(Optional.empty());
@@ -58,5 +62,48 @@ class OfferServiceTest implements SampleOfferDto, SampleOffer {
         assertThatThrownBy(() -> offerService.getOfferById(id))
                 .isInstanceOf(OfferNotFoundException.class)
                 .hasMessageContaining(String.format("Offer with id %s was not found", id));
+    }
+
+    @Test
+    void should_correctly_map_and_save_offer() {
+        // given
+        Offer offerToSave = newOfferWithoutId();
+        Offer savedOffer = newOffer();
+        OfferDto offerDtoToSave = newOfferDtoWithoutId();
+        OfferDto expected = newOfferDto();
+
+        when(repository.save(offerToSave)).thenReturn(savedOffer);
+
+        // when
+        OfferDto actual = offerService.saveOffer(offerDtoToSave);
+
+        // then
+        assertThat(actual).isEqualTo(expected);
+    }
+
+    @Test
+    void should_throw_duplicate_offer_url_exception_when_save_offer_with_not_unique_url() {
+        // given
+        OfferDto offerDtoToSave = newOfferDtoWithoutId();
+        Offer offerToSave = newOfferWithoutId();
+        when(repository.save(offerToSave)).thenThrow(DuplicateKeyException.class);
+
+        // when
+        // then
+        assertThatThrownBy(() -> offerService.saveOffer(offerDtoToSave))
+                .isInstanceOf(DuplicateOfferUrlException.class)
+                .hasMessageContaining(String.format("Offer with url '%s' already exists", offerToSave.getOfferUrl()));
+    }
+
+    @Test
+    void should_delete_offer() {
+        // given
+        OfferDto offerDto = newOfferDto();
+
+        // when
+        offerService.deleteOfferById(offerDto.getId());
+
+        // then
+        verify(repository, times(1)).deleteById(offerDto.getId());
     }
 }
