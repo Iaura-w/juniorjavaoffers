@@ -4,6 +4,9 @@ import com.github.cloudyrock.mongock.ChangeLog;
 import com.github.cloudyrock.mongock.ChangeSet;
 import com.javaoffers.offer.domain.Offer;
 import com.javaoffers.offer.domain.OfferRepository;
+import com.javaoffers.security.login.domain.User;
+import com.javaoffers.security.login.domain.UserRepository;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,6 +21,15 @@ public class DatabaseChangeLog {
         offerList.add(offer2());
 
         offerRepository.insert(offerList);
+    }
+
+    @ChangeSet(order = "002", id = "seedDatabaseUsers", author = "lauur")
+    public void seedDatabaseUsers(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+        userRepository.insert(admin(passwordEncoder));
+    }
+
+    private static User admin(PasswordEncoder passwordEncoder) {
+        return new User("a1", "admin", passwordEncoder.encode("admin"));
     }
 
     private Offer offer2() {
