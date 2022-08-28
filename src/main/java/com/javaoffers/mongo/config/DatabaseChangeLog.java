@@ -4,11 +4,13 @@ import com.github.cloudyrock.mongock.ChangeLog;
 import com.github.cloudyrock.mongock.ChangeSet;
 import com.javaoffers.offer.domain.Offer;
 import com.javaoffers.offer.domain.OfferRepository;
-import com.javaoffers.security.login.domain.User;
+import com.javaoffers.security.login.domain.AppUser;
 import com.javaoffers.security.login.domain.UserRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 
 @ChangeLog(order = "001")
@@ -28,8 +30,8 @@ public class DatabaseChangeLog {
         userRepository.insert(admin(passwordEncoder));
     }
 
-    private static User admin(PasswordEncoder passwordEncoder) {
-        return new User("a1", "admin", passwordEncoder.encode("admin"));
+    private static AppUser admin(PasswordEncoder passwordEncoder) {
+        return new AppUser(null, "admin", passwordEncoder.encode("admin"),new HashSet<>(Collections.singleton("ADMIN")));
     }
 
     private Offer offer2() {
