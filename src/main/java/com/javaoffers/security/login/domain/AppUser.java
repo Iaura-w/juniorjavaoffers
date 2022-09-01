@@ -6,8 +6,9 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
-import org.springframework.data.mongodb.core.mapping.Field;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 import java.util.Set;
 
 @Data
@@ -17,11 +18,16 @@ import java.util.Set;
 public class AppUser {
     @Id
     private String id;
-    @Field
+
     @Indexed(unique = true)
+    @NotBlank
+    @Size(min = 3,max = 50)
     private String username;
-    @Field
+
+    @NotBlank
+    @Size(min = 3,max = 50)
     private String password;
-    @Field
+
+    @NotBlank
     private Set<String> roles;
 }
