@@ -16,6 +16,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import static com.javaoffers.security.login.domain.AppUserRole.ADMIN;
+
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
@@ -36,8 +38,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .mvcMatchers("/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs/**").permitAll()
                 .mvcMatchers("/login/**").permitAll()
-                .mvcMatchers(HttpMethod.POST, "/api/offers/**").hasRole("ADMIN")
-                .mvcMatchers(HttpMethod.DELETE, "/api/offers/**").hasRole("ADMIN")
+                .mvcMatchers(HttpMethod.POST, "/api/offers/**").hasRole(ADMIN.name())
+                .mvcMatchers(HttpMethod.DELETE, "/api/offers/**").hasRole(ADMIN.name())
                 .anyRequest().authenticated();
     }
 

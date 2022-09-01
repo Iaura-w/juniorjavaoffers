@@ -28,10 +28,15 @@ public class DatabaseChangeLog {
     @ChangeSet(order = "002", id = "seedDatabaseUsers", author = "lauur")
     public void seedDatabaseUsers(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         userRepository.insert(admin(passwordEncoder));
+        userRepository.insert(user(passwordEncoder));
     }
 
     private static AppUser admin(PasswordEncoder passwordEncoder) {
-        return new AppUser(null, "admin", passwordEncoder.encode("admin"),new HashSet<>(Collections.singleton("ADMIN")));
+        return new AppUser(null, "admin", passwordEncoder.encode("admin"), new HashSet<>(Collections.singleton("ROLE_ADMIN")));
+    }
+
+    private static AppUser user(PasswordEncoder passwordEncoder) {
+        return new AppUser(null, "user", passwordEncoder.encode("password"), new HashSet<>(Collections.singleton("ROLE_USER")));
     }
 
     private Offer offer2() {
