@@ -9,7 +9,11 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.Set;
+
+import static com.javaoffers.security.login.domain.AppUserRole.USER;
 
 @Data
 @NoArgsConstructor
@@ -21,13 +25,18 @@ public class AppUser {
 
     @Indexed(unique = true)
     @NotBlank
-    @Size(min = 3,max = 50)
+    @Size(min = 3, max = 50)
     private String username;
 
     @NotBlank
-    @Size(min = 3,max = 50)
+    @Size(min = 3, max = 50)
     private String password;
 
-    @NotBlank
-    private Set<String> roles;
+    private Set<String> roles = new HashSet<>();
+
+    public AppUser(String username, String password) {
+        this.username = username;
+        this.password = password;
+        this.roles = Collections.singleton("ROLE_" + USER.name());
+    }
 }
