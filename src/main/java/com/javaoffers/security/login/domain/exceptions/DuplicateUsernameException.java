@@ -1,4 +1,4 @@
-package com.javaoffers.security.login.domain.exception;
+package com.javaoffers.security.login.domain.exceptions;
 
 public class DuplicateUsernameException extends RuntimeException {
 
