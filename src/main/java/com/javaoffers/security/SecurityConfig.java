@@ -34,6 +34,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .csrf().disable()
+                .httpBasic().disable()
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
@@ -41,6 +42,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .mvcMatchers("/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs/**").permitAll()
                 .mvcMatchers("/login/**").permitAll()
+                .mvcMatchers("/register/**").permitAll()
                 .mvcMatchers(HttpMethod.POST, "/api/offers/**").hasRole(ADMIN.name())
                 .mvcMatchers(HttpMethod.DELETE, "/api/offers/**").hasRole(ADMIN.name())
                 .anyRequest().authenticated()
