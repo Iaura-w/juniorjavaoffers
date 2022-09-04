@@ -21,4 +21,12 @@ public class LoginControllerErrorHandler extends ResponseEntityExceptionHandler 
         log.error(message);
         return new LoginErrorResponse(ZonedDateTime.now(), HttpStatus.UNAUTHORIZED, message);
     }
+
+    @ExceptionHandler(DuplicateUsernameException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public LoginErrorResponse handleDuplicateUsernameException(DuplicateUsernameException e){
+        String message = e.getMessage();
+        log.error(message);
+        return new LoginErrorResponse(ZonedDateTime.now(),HttpStatus.CONFLICT,message);
+    }
 }
