@@ -5,7 +5,7 @@ import com.github.cloudyrock.mongock.ChangeSet;
 import com.javaoffers.offer.domain.Offer;
 import com.javaoffers.offer.domain.OfferRepository;
 import com.javaoffers.security.login.domain.AppUser;
-import com.javaoffers.security.login.domain.UserRepository;
+import com.javaoffers.security.login.domain.AppUserRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.ArrayList;
@@ -26,7 +26,7 @@ public class DatabaseChangeLog {
     }
 
     @ChangeSet(order = "002", id = "seedDatabaseUsers", author = "lauur")
-    public void seedDatabaseUsers(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public void seedDatabaseUsers(AppUserRepository userRepository, PasswordEncoder passwordEncoder) {
         userRepository.insert(admin(passwordEncoder));
         userRepository.insert(user(passwordEncoder));
     }

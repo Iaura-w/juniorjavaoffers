@@ -1,7 +1,7 @@
 package com.javaoffers.security.jwt;
 
 import com.javaoffers.security.MongoUserService;
-import com.javaoffers.security.login.domain.UserRepository;
+import com.javaoffers.security.login.domain.AppUserRepository;
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -23,12 +23,12 @@ public class JwtConfig {
     }
 
     @Bean
-    public UserDetailsService userDetailsService(@Autowired UserRepository userRepository) {
+    public UserDetailsService userDetailsService(@Autowired AppUserRepository userRepository) {
         return new MongoUserService(userRepository);
     }
 
     @Bean
-    public JwtTokenFilter jwtTokenFilter(@Autowired UserRepository userRepository) {
+    public JwtTokenFilter jwtTokenFilter(@Autowired AppUserRepository userRepository) {
         return new JwtTokenFilter(userDetailsService(userRepository), jwtUtils());
     }
 
