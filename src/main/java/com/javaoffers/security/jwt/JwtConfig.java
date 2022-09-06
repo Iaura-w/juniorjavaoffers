@@ -28,8 +28,8 @@ public class JwtConfig {
     }
 
     @Bean
-    public JwtTokenFilter jwtTokenFilter(@Autowired AppUserRepository userRepository) {
-        return new JwtTokenFilter(userDetailsService(userRepository), jwtUtils());
+    public JwtTokenFilter jwtTokenFilter(@Autowired UserDetailsService userDetailsService, @Autowired JwtUtils jwtUtils) {
+        return new JwtTokenFilter(userDetailsService, jwtUtils);
     }
 
     @Bean

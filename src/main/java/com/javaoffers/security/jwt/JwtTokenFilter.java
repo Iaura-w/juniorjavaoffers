@@ -31,7 +31,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
         try {
             String authorizationHeader = request.getHeader(AUTHORIZATION_HEADER);
 
-            if (isAuthorizationHeaderInvalid(authorizationHeader)) {
+            if (!isAuthorizationHeaderValid(authorizationHeader)) {
                 filterChain.doFilter(request, response);
                 return;
             }
@@ -60,7 +60,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
         return !Strings.isNullOrEmpty(token) && jwtUtils.isJwtTokenValid(token);
     }
 
-    private static boolean isAuthorizationHeaderInvalid(String authorizationHeader) {
-        return Strings.isNullOrEmpty(authorizationHeader) || !authorizationHeader.startsWith(TOKEN_PREFIX);
+    private static boolean isAuthorizationHeaderValid(String authorizationHeader) {
+        return !Strings.isNullOrEmpty(authorizationHeader) && authorizationHeader.startsWith(TOKEN_PREFIX);
     }
 }
