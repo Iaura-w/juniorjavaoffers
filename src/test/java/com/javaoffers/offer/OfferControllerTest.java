@@ -7,12 +7,16 @@ import com.javaoffers.offer.domain.dto.OfferDto;
 import com.javaoffers.offer.domain.exceptions.DuplicateOfferUrlException;
 import com.javaoffers.offer.domain.exceptions.OfferControllerErrorHandler;
 import com.javaoffers.offer.domain.exceptions.OfferNotFoundException;
+import com.javaoffers.security.SecurityConfig;
+import com.javaoffers.security.jwt.JwtConfigTest;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
@@ -31,6 +35,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebMvcTest
 @ContextConfiguration(classes = MockMvcConfig.class)
+@WithMockUser(username = "sampleUser", roles = {"USER", "ADMIN"})
 class OfferControllerTest implements SampleOfferDto {
 
     @Autowired
@@ -185,7 +190,7 @@ class OfferControllerTest implements SampleOfferDto {
         OfferDto offerDto = newOfferDto();
 
         // when
-        ResultActions resultActions = mockMvc.perform(delete("/api/offers/"+offerDto.getId()));
+        ResultActions resultActions = mockMvc.perform(delete("/api/offers/" + offerDto.getId()));
 
         // then
         resultActions
@@ -194,6 +199,7 @@ class OfferControllerTest implements SampleOfferDto {
     }
 }
 
+@Import({SecurityConfig.class, JwtConfigTest.class})
 class MockMvcConfig implements SampleOfferDto {
 
     @Bean
