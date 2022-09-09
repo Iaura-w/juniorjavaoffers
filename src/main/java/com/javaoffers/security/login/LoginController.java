@@ -33,6 +33,6 @@ public class LoginController {
     public ResponseEntity<String> register(@Valid @RequestBody RegisterRequestDto registerRequestDto) {
         AppUser registeredUser = userService.registerUser(registerRequestDto.getUsername(), registerRequestDto.getPassword());
         log.info("New user '{}' registered", registerRequestDto.getUsername());
-        return ResponseEntity.ok(String.format("User '%s' was registered", registeredUser.getUsername()));
+        return ResponseEntity.status(HttpStatus.CREATED).body(String.format("User '%s' was registered", registeredUser.getUsername()));
     }
 }
