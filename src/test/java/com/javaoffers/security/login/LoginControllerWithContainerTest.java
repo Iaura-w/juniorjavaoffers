@@ -26,6 +26,9 @@ import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.utility.DockerImageName;
 
+import java.util.Arrays;
+import java.util.List;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -35,7 +38,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @Testcontainers
 @ActiveProfiles("container")
-public class LoginControllerWithContainerTest {
+class LoginControllerWithContainerTest {
 
     @Container
     private static final MongoDBContainer DB_CONTAINER = new MongoDBContainer(DockerImageName.parse("mongo:5.0.9"));
@@ -228,6 +231,119 @@ public class LoginControllerWithContainerTest {
 
         assertThat(actualBody).isEqualTo(expectedMessage);
         assertThat(userRepository.findByUsername(username)).isPresent();
+    }
+
+    @Test
+    void should_return_status_conflict_when_register_user_with_duplicate_username() throws Exception {
+        // given
+        String username = "duplicateUser";
+        String password = "duplicateUser";
+        AppUser user = new AppUser(username, password);
+        userRepository.save(user);
+        RegisterRequestDto registerRequestDto = new RegisterRequestDto(username, password);
+        String body = objectMapper.writeValueAsString(registerRequestDto);
+        String expectedMessage = String.format("Username '%s' already exists", username);
+        HttpStatus expectedStatus = HttpStatus.CONFLICT;
+        assertThat(userRepository.findByUsername(username)).isPresent();
+
+        // when
+        ResultActions resultActions = mockMvc.perform(post("/register")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(body));
+
+        // then
+        MvcResult mvcResult = resultActions.andExpect(status().isConflict())
+                .andDo(print())
+                .andReturn();
+        String actualBody = mvcResult.getResponse().getContentAsString();
+        LoginErrorResponse actualResponse = objectMapper.readValue(actualBody, LoginErrorResponse.class);
+
+        assertThat(actualResponse.getMessage()).isEqualTo(expectedMessage);
+        assertThat(actualResponse.getHttpStatus()).isEqualTo(expectedStatus);
+    }
+
+    @Test
+    void should_return_status_bad_request_when_register_with_no_username() throws Exception {
+        // given
+        String username = " ";
+        String password = "password";
+
+        RegisterRequestDto registerRequestDto = new RegisterRequestDto(username, password);
+        String body = objectMapper.writeValueAsString(registerRequestDto);
+        HttpStatus expectedStatus = HttpStatus.BAD_REQUEST;
+        List<String> expectedMessage = Arrays.asList(
+                "username - must not be blank",
+                "username - size must be between 3 and 50"
+        );
+
+        // when
+        ResultActions resultActions = mockMvc.perform(post("/register")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(body));
+
+        // then
+        MvcResult mvcResult = resultActions.andExpect(status().isBadRequest())
+                .andDo(print())
+                .andReturn();
+        String actualBody = mvcResult.getResponse().getContentAsString();
+        ValidationErrorResponse actualResponse = objectMapper.readValue(actualBody, ValidationErrorResponse.class);
+
+        assertThat(actualResponse.getMessage()).contains(expectedMessage);
+        assertThat(actualResponse.getHttpStatus()).isEqualTo(expectedStatus);
+    }
+
+    @Test
+    void should_return_status_bad_request_when_register_with_too_short_username() throws Exception {
+        // given
+        String username = "a";
+        String password = "password";
+
+        RegisterRequestDto registerRequestDto = new RegisterRequestDto(username, password);
+        String body = objectMapper.writeValueAsString(registerRequestDto);
+        HttpStatus expectedStatus = HttpStatus.BAD_REQUEST;
+        String expectedMessage = "[username - size must be between 3 and 50]";
+
+        // when
+        ResultActions resultActions = mockMvc.perform(post("/register")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(body));
+
+        // then
+        MvcResult mvcResult = resultActions.andExpect(status().isBadRequest())
+                .andDo(print())
+                .andReturn();
+        String actualBody = mvcResult.getResponse().getContentAsString();
+        ValidationErrorResponse actualResponse = objectMapper.readValue(actualBody, ValidationErrorResponse.class);
+
+        assertThat(actualResponse.getMessage()).isEqualTo(expectedMessage);
+        assertThat(actualResponse.getHttpStatus()).isEqualTo(expectedStatus);
+    }
+
+    @Test
+    void should_return_status_bad_request_when_register_with_no_password() throws Exception {
+        // given
+        String username = "username";
+        String password = null;
+
+        RegisterRequestDto registerRequestDto = new RegisterRequestDto(username, password);
+        String body = objectMapper.writeValueAsString(registerRequestDto);
+        HttpStatus expectedStatus = HttpStatus.BAD_REQUEST;
+        String expectedMessage = "[password - must not be blank]";
+
+        // when
+        ResultActions resultActions = mockMvc.perform(post("/register")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(body));
+
+        // then
+        MvcResult mvcResult = resultActions.andExpect(status().isBadRequest())
+                .andDo(print())
+                .andReturn();
+        String actualBody = mvcResult.getResponse().getContentAsString();
+        ValidationErrorResponse actualResponse = objectMapper.readValue(actualBody, ValidationErrorResponse.class);
+
+        assertThat(actualResponse.getMessage()).isEqualTo(expectedMessage);
+        assertThat(actualResponse.getHttpStatus()).isEqualTo(expectedStatus);
     }
 
     @Import(JobOffersApplication.class)
