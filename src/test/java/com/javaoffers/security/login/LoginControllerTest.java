@@ -11,6 +11,7 @@ import com.javaoffers.security.login.domain.dto.LoginRequestDto;
 import com.javaoffers.security.login.domain.dto.RegisterRequestDto;
 import com.javaoffers.security.login.domain.exceptions.DuplicateUsernameException;
 import com.javaoffers.security.login.domain.exceptions.LoginControllerErrorHandler;
+import com.javaoffers.security.login.domain.exceptions.LoginErrorResponse;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -71,8 +72,8 @@ class LoginControllerTest {
         LoginRequestDto loginRequestDto = new LoginRequestDto(username, password);
         String body = objectMapper.writeValueAsString(loginRequestDto);
 
-        String expected1 = HttpStatus.UNAUTHORIZED.name();
-        String expected2 = "Bad credentials";
+        HttpStatus expectedStatus = HttpStatus.UNAUTHORIZED;
+        String expectedMessage = "Bad credentials";
 
         // when
         ResultActions resultActions = mockMvc.perform(post("/login")
@@ -84,8 +85,11 @@ class LoginControllerTest {
                 .andExpect(status().isUnauthorized())
                 .andDo(print())
                 .andReturn();
-        String actual = mvcResult.getResponse().getContentAsString();
-        assertThat(actual).contains(expected1, expected2);
+        String actualBody = mvcResult.getResponse().getContentAsString();
+        LoginErrorResponse actualResponse = objectMapper.readValue(actualBody, LoginErrorResponse.class);
+
+        assertThat(actualResponse.getMessage()).contains(expectedMessage);
+        assertThat(actualResponse.getHttpStatus()).isEqualTo(expectedStatus);
     }
 
     @Test
@@ -118,8 +122,8 @@ class LoginControllerTest {
         String password = "duplicateUser";
         RegisterRequestDto registerRequestDto = new RegisterRequestDto(username, password);
         String body = objectMapper.writeValueAsString(registerRequestDto);
-        String expected1 = HttpStatus.CONFLICT.name();
-        String expected2 = String.format("Username '%s' already exists", username);
+        HttpStatus expectedStatus = HttpStatus.CONFLICT;
+        String expectedMessage = String.format("Username '%s' already exists", username);
 
         // when
         ResultActions resultActions = mockMvc.perform(post("/register")
@@ -131,8 +135,11 @@ class LoginControllerTest {
                 .andExpect(status().isConflict())
                 .andDo(print())
                 .andReturn();
-        String actual = mvcResult.getResponse().getContentAsString();
-        assertThat(actual).contains(expected1, expected2);
+        String actualBody = mvcResult.getResponse().getContentAsString();
+        LoginErrorResponse actualResponse = objectMapper.readValue(actualBody, LoginErrorResponse.class);
+
+        assertThat(actualResponse.getMessage()).isEqualTo(expectedMessage);
+        assertThat(actualResponse.getHttpStatus()).isEqualTo(expectedStatus);
     }
 
     @Import({SecurityConfig.class, JwtConfigTest.class})
