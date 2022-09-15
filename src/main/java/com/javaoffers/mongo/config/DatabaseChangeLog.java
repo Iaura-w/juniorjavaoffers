@@ -4,8 +4,13 @@ import com.github.cloudyrock.mongock.ChangeLog;
 import com.github.cloudyrock.mongock.ChangeSet;
 import com.javaoffers.offer.domain.Offer;
 import com.javaoffers.offer.domain.OfferRepository;
+import com.javaoffers.security.login.domain.AppUser;
+import com.javaoffers.security.login.domain.AppUserRepository;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 
 @ChangeLog(order = "001")
@@ -18,6 +23,20 @@ public class DatabaseChangeLog {
         offerList.add(offer2());
 
         offerRepository.insert(offerList);
+    }
+
+    @ChangeSet(order = "002", id = "seedDatabaseUsers", author = "lauur")
+    public void seedDatabaseUsers(AppUserRepository userRepository, PasswordEncoder passwordEncoder) {
+        userRepository.insert(admin(passwordEncoder));
+        userRepository.insert(user(passwordEncoder));
+    }
+
+    private static AppUser admin(PasswordEncoder passwordEncoder) {
+        return new AppUser(null, "admin", passwordEncoder.encode("admin"), new HashSet<>(Collections.singleton("ROLE_ADMIN")));
+    }
+
+    private static AppUser user(PasswordEncoder passwordEncoder) {
+        return new AppUser(null, "user", passwordEncoder.encode("password"), new HashSet<>(Collections.singleton("ROLE_USER")));
     }
 
     private Offer offer2() {

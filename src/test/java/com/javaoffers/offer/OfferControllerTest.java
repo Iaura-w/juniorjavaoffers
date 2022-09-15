@@ -1,18 +1,25 @@
 package com.javaoffers.offer;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.javaoffers.exceptions.ValidationErrorHandler;
+import com.javaoffers.exceptions.ValidationErrorResponse;
 import com.javaoffers.offer.domain.OfferRepository;
 import com.javaoffers.offer.domain.OfferService;
 import com.javaoffers.offer.domain.dto.OfferDto;
 import com.javaoffers.offer.domain.exceptions.DuplicateOfferUrlException;
 import com.javaoffers.offer.domain.exceptions.OfferControllerErrorHandler;
+import com.javaoffers.offer.domain.exceptions.OfferErrorResponse;
 import com.javaoffers.offer.domain.exceptions.OfferNotFoundException;
+import com.javaoffers.security.SecurityConfig;
+import com.javaoffers.security.jwt.JwtConfigTest;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
@@ -31,6 +38,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebMvcTest
 @ContextConfiguration(classes = MockMvcConfig.class)
+@WithMockUser(username = "sampleUser", roles = {"USER", "ADMIN"})
 class OfferControllerTest implements SampleOfferDto {
 
     @Autowired
@@ -80,8 +88,8 @@ class OfferControllerTest implements SampleOfferDto {
     void should_return_status_not_found_when_get_offer_by_id_not_found() throws Exception {
         // given
         String id = "828";
-        String expected1 = String.format("Offer with id %s was not found", id);
-        String expected2 = HttpStatus.NOT_FOUND.name();
+        String expectedMessage = String.format("Offer with id %s was not found", id);
+        HttpStatus expectedStatus = HttpStatus.NOT_FOUND;
 
         // when
         ResultActions resultActions = mockMvc.perform(get("/api/offers/" + id));
@@ -91,9 +99,11 @@ class OfferControllerTest implements SampleOfferDto {
                 .andExpect(status().isNotFound())
                 .andDo(print())
                 .andReturn();
-        String actual = mvcResult.getResponse().getContentAsString();
+        String actualBody = mvcResult.getResponse().getContentAsString();
+        OfferErrorResponse actualResponse = objectMapper.readValue(actualBody, OfferErrorResponse.class);
 
-        assertThat(actual).contains(expected1, expected2);
+        assertThat(actualResponse.getMessage()).contains(expectedMessage);
+        assertThat(actualResponse.getHttpStatus()).isEqualTo(expectedStatus);
     }
 
     @Test
@@ -131,7 +141,7 @@ class OfferControllerTest implements SampleOfferDto {
         String content = objectMapper.writeValueAsString(notUniqueOffer);
 
         String expectedMessage = String.format("Offer with url '%s' already exists", notUniqueOffer.getOfferUrl());
-        String expectedStatus = HttpStatus.CONFLICT.name();
+        HttpStatus expectedStatus = HttpStatus.CONFLICT;
 
         // when
         ResultActions resultActions = mockMvc.perform(post("/api/offers")
@@ -143,9 +153,11 @@ class OfferControllerTest implements SampleOfferDto {
                 .andExpect(status().isConflict())
                 .andDo(print())
                 .andReturn();
-        String actual = mvcResult.getResponse().getContentAsString();
+        String actualBody = mvcResult.getResponse().getContentAsString();
+        OfferErrorResponse actualResponse = objectMapper.readValue(actualBody, OfferErrorResponse.class);
 
-        assertThat(actual).contains(expectedMessage, expectedStatus);
+        assertThat(actualResponse.getMessage()).contains(expectedMessage);
+        assertThat(actualResponse.getHttpStatus()).isEqualTo(expectedStatus);
     }
 
     @Test
@@ -162,7 +174,7 @@ class OfferControllerTest implements SampleOfferDto {
                 "title - must not be blank",
                 "salary - must not be blank",
                 "offerUrl - must not be blank");
-        String expectedStatus = HttpStatus.BAD_REQUEST.name();
+        HttpStatus expectedStatus = HttpStatus.BAD_REQUEST;
 
         // when
         ResultActions resultActions = mockMvc.perform(post("/api/offers")
@@ -175,8 +187,10 @@ class OfferControllerTest implements SampleOfferDto {
                 .andDo(print())
                 .andReturn();
         String actualBody = mvcResult.getResponse().getContentAsString();
+        ValidationErrorResponse actualResponse = objectMapper.readValue(actualBody, ValidationErrorResponse.class);
 
-        assertThat(actualBody).contains(expectedMessage).contains(expectedStatus);
+        assertThat(actualResponse.getMessage()).contains(expectedMessage);
+        assertThat(actualResponse.getHttpStatus()).isEqualTo(expectedStatus);
     }
 
     @Test
@@ -185,7 +199,7 @@ class OfferControllerTest implements SampleOfferDto {
         OfferDto offerDto = newOfferDto();
 
         // when
-        ResultActions resultActions = mockMvc.perform(delete("/api/offers/"+offerDto.getId()));
+        ResultActions resultActions = mockMvc.perform(delete("/api/offers/" + offerDto.getId()));
 
         // then
         resultActions
@@ -194,6 +208,7 @@ class OfferControllerTest implements SampleOfferDto {
     }
 }
 
+@Import({SecurityConfig.class, JwtConfigTest.class})
 class MockMvcConfig implements SampleOfferDto {
 
     @Bean
@@ -233,5 +248,10 @@ class MockMvcConfig implements SampleOfferDto {
     @Bean
     OfferControllerErrorHandler offerControllerErrorHandler() {
         return new OfferControllerErrorHandler();
+    }
+
+    @Bean
+    ValidationErrorHandler validationErrorHandler() {
+        return new ValidationErrorHandler();
     }
 }
