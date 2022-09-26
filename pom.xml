@@ -16,7 +16,7 @@
     <version>1.0-SNAPSHOT</version>
     <name>junior-java-offers</name>
     <description>junior-java-offers</description>
-    <packaging>war</packaging>
+    <packaging>jar</packaging>
 
     <properties>
         <java.version>8</java.version>
