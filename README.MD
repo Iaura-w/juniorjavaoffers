@@ -1,3 +1,5 @@
+[![Build Status](https://app.travis-ci.com/lauur/juniorjavaoffers.svg?branch=main)](https://app.travis-ci.com/lauur/juniorjavaoffers)
+
 # Junior Java Offers Application
 
 Web application for job search for Junior Java Developers. The main function of the application is to download current
@@ -45,5 +47,5 @@ To start frontend:
   npm start
 ```
 
-- App runs on: http://localhost:8080
-- Frontend runs on: http://localhost:3000
+- App runs by default on: http://localhost:8080
+- Frontend runs by default on: http://localhost:3000
