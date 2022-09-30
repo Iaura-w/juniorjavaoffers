@@ -13,8 +13,10 @@ ADMIN role has additional permissions to add and delete offers.
 - Java 8
 - SpringBoot
 - Spring Security
+- Spring Data
 - MongoDB
 - Redis
+- TestContainers
 - JUnit 5
 - AssertJ
 - Docker
